@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.ucne.apiprioridades"
-        minSdk = 31
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -55,6 +55,7 @@ dependencies {
 
     //ultima version del bom aqui: https://developer.android.com/jetpack/compose/bom
     implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.benchmark:benchmark-macro:1.2.3")
 
     val lifeCycleVersion = "2.7.0"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion")
