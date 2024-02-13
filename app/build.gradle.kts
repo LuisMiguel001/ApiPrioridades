@@ -52,10 +52,7 @@ android {
 }
 
 dependencies {
-
-    //ultima version del bom aqui: https://developer.android.com/jetpack/compose/bom
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.benchmark:benchmark-macro:1.2.3")
 
     val lifeCycleVersion = "2.7.0"
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifeCycleVersion")
@@ -90,6 +87,7 @@ dependencies {
     implementation("androidx.room:room-runtime:$roomVersion")
     annotationProcessor("androidx.room:room-compiler:$roomVersion")
     ksp("androidx.room:room-compiler:$roomVersion")
+
     //  optional - Kotlin Extensions and Coroutines support for Room
     implementation("androidx.room:room-ktx:$roomVersion")
 

@@ -13,6 +13,7 @@ interface PrioridadApi {
     @GET("/api/Prioridades")
     @Headers("X-API-Key: test")
     suspend fun getAllPrioridades():List<PrioridadDto>
+
     @GET("/api/Prioridades/{id}")
     @Headers("X-API-key: test")
     suspend fun getPrioridad(@Path("id") id: Int): PrioridadDto

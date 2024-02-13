@@ -17,17 +17,14 @@ class PrioridadViewModel @Inject constructor(
     private val prioridad: PrioridadRepository
 ) : ViewModel() {
 
-    init {
-        getAllPrioridades()
-    }
-
-
     private val _prioridadListState: MutableStateFlow<PrioridadListState> =
         MutableStateFlow(PrioridadListState())
 
     val prioridadListState: StateFlow<PrioridadListState>
         get() = _prioridadListState
-
+    init {
+        getAllPrioridades()
+    }
     fun getAllPrioridades() {
         viewModelScope.launch {
             prioridad.getPrioridades().collect { resource ->
