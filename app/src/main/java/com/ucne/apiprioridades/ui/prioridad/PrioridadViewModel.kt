@@ -22,9 +22,11 @@ class PrioridadViewModel @Inject constructor(
 
     val prioridadListState: StateFlow<PrioridadListState>
         get() = _prioridadListState
+
     init {
         getAllPrioridades()
     }
+
     fun getAllPrioridades() {
         viewModelScope.launch {
             prioridad.getPrioridades().collect { resource ->
@@ -49,11 +51,12 @@ class PrioridadViewModel @Inject constructor(
             prioridad.getPrioridadById(prioridadId).collect { resource ->
                 when (resource) {
                     is Resource.Loading -> {
-                        // Puedes manejar la carga si es necesario
+                        _prioridadListState.value =
+                            PrioridadListState(isLoading = true)
                     }
                     is Resource.Success -> {
                         _prioridadListState.value =
-                            PrioridadListState(selectPrioridadId = prioridadId, selectPrioridad = "Seleccionado")
+                            PrioridadListState(isLoading = false)
                     }
                     is Resource.Error -> {
                         _prioridadListState.value =
@@ -69,6 +72,4 @@ data class PrioridadListState(
     val isLoading: Boolean = false,
     val prioridad: List<PrioridadDto>? = emptyList(),
     val error: String? = null,
-    val selectPrioridad: String? = "",
-    val selectPrioridadId: Int? = 0
 )

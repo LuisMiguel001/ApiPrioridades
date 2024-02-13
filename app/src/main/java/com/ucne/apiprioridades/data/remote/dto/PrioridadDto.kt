@@ -1,13 +1,15 @@
 package com.ucne.apiprioridades.data.remote.dto
 
+import java.time.LocalDate
+
 data class PrioridadDto(
-    val idPrioridad : Int,
-    val nombre: String,
-    var descripcion: String,
-    val plazo: Int,
-    var esNulo: Boolean,
-    val Creador: Int,
-    var fechaCreacion: String,
-    val modidicador: Int,
-    var fechaModificacion: String,
+    val idPrioridad : Int = 1,
+    val nombre: String = "",
+    val descripcion: String = "",
+    val plazo: Int = 1,
+    val esNulo: Boolean = false,
+    val Creador: Int = 1,
+    val fechaCreacion: String = "",
+    val modidicador: Int = 1,
+    val fechaModificacion: String = "",
 )
