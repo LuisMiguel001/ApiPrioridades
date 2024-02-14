@@ -6,50 +6,62 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ucne.apiprioridades.R
 import com.ucne.apiprioridades.data.remote.dto.PrioridadDto
+import kotlinx.coroutines.delay
 
 @Composable
 fun RegistroScreen(
-    onRegisterClick: (PrioridadDto) -> Unit
+    onRegistrarButton: (PrioridadDto) -> Unit
 ) {
-    var idPrioridad by rememberSaveable { mutableStateOf(0) }
+    val viewModel: RegistroViewModel = viewModel()
+
+    var idPrioridad by rememberSaveable { mutableStateOf("") }
     var nombre by rememberSaveable { mutableStateOf("") }
     var descripcion by rememberSaveable { mutableStateOf("") }
-    var plazo by rememberSaveable { mutableStateOf(0) }
-    var creador by rememberSaveable { mutableStateOf(0) }
+    var plazo by rememberSaveable { mutableStateOf("") }
+    var isnull by rememberSaveable { mutableStateOf("") }
+    var creador by rememberSaveable { mutableStateOf("") }
     var fechaCreacion by rememberSaveable { mutableStateOf("") }
-    var modificadoPor by rememberSaveable { mutableStateOf(0) }
+    var modificadoPor by rememberSaveable { mutableStateOf("") }
     var fechaModificacion by rememberSaveable { mutableStateOf("") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Text(text = "Registro de Prioridad", style = MaterialTheme.typography.bodyMedium)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = idPrioridad.toString(),
-            onValueChange = { idPrioridad = it.toIntOrNull() ?: 0 },
+            value = idPrioridad,
+            onValueChange = { idPrioridad = it },
             label = { Text("Prioridad ID") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,7 +90,7 @@ fun RegistroScreen(
 
         OutlinedTextField(
             value = plazo.toString(),
-            onValueChange = { plazo = it.toIntOrNull() ?: 0 },
+            onValueChange = { plazo = it},
             label = { Text("Plazo") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,8 +100,17 @@ fun RegistroScreen(
         )
 
         OutlinedTextField(
+            value = isnull.toString(),
+            onValueChange = { isnull = it},
+            label = { Text("EsNulo") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+        )
+
+        OutlinedTextField(
             value = creador.toString(),
-            onValueChange = { creador = it.toIntOrNull() ?: 0 },
+            onValueChange = { creador = it},
             label = { Text("Creado Por") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -109,7 +130,7 @@ fun RegistroScreen(
 
         OutlinedTextField(
             value = modificadoPor.toString(),
-            onValueChange = { modificadoPor = it.toIntOrNull() ?: 0 },
+            onValueChange = { modificadoPor = it},
             label = { Text("Modificado Por") },
             modifier = Modifier
                 .fillMaxWidth()
@@ -130,22 +151,33 @@ fun RegistroScreen(
         Button(
             onClick = {
                 val prioridad = PrioridadDto(
-                    idPrioridad = idPrioridad,
+                    idPrioridad = idPrioridad.toInt(),
                     nombre = nombre,
                     descripcion = descripcion,
-                    plazo = plazo,
-                    Creador = creador,
+                    plazo = plazo.toInt(),
+                    esNulo = isnull.toBoolean(),
+                    Creador = creador.toInt(),
                     fechaCreacion = fechaCreacion,
-                    modidicador = modificadoPor,
+                    modidicador = modificadoPor.toInt(),
                     fechaModificacion = fechaModificacion
                 )
-                onRegisterClick(prioridad)
+                viewModel.postPrioridades(prioridad)
+
+              /*  idPrioridad = ""
+                nombre = ""
+                descripcion = ""
+                plazo = ""
+                creador = ""
+                fechaCreacion = ""
+                modificadoPor = ""
+                fechaModificacion = ""*/
             },
             modifier = Modifier.fillMaxWidth(),
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.Gray,
                 containerColor = Color.Green
             )
+
         ) {
             Text(text = "Registrar", modifier = Modifier.padding(8.dp))
         }

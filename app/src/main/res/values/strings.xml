@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">ApiPrioridades</string>
+    <string name="success_message">Guardado Correctamente</string>
 </resources>

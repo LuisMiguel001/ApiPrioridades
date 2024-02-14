@@ -35,10 +35,9 @@ fun PrioridadScreem(
             ) {
                 Text("ID: ${prioridad.idPrioridad}")
                 Text("Nombre : ${prioridad.nombre}")
-                Row(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .fillMaxWidth()
                 ) {
                     Text("Descripción: ${prioridad.descripcion}")
                     Text("Descripción: ${prioridad.plazo}")

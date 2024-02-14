@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ucne.apiprioridades.ui.C_Prioridades.ConsultaScreen
+import com.ucne.apiprioridades.ui.C_Prioridades.ConsultaViewModel
 import com.ucne.apiprioridades.ui.R_Prioridades.RegistroScreen
 import com.ucne.apiprioridades.ui.home.HomeScreen
 import com.ucne.apiprioridades.ui.home.HomeViewModel
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 setContent {
                     val viewModel: HomeViewModel = viewModel()
+                    val ConsultaViewModel: ConsultaViewModel = viewModel()
                     var currentScreen by remember { mutableStateOf("home") }
 
                     if (currentScreen == "home") {
@@ -34,12 +36,10 @@ class MainActivity : ComponentActivity() {
                         )
                     } else if (currentScreen == "registro") {
                         RegistroScreen(
-                            onRegisterClick = {}
+                            onRegistrarButton = {}
                         )
                     } else if (currentScreen == "consulta") {
-                        ConsultaScreen(
-                            onConsultClick = { /* Acción al hacer clic en una prioridad */ }
-                        )
+                        ConsultaScreen()
                     }
                 }
             }
