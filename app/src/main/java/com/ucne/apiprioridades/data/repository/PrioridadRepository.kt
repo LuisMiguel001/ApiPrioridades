@@ -57,26 +57,22 @@ class PrioridadRepository @Inject constructor(
         }
     }
 
-    fun postPrioridades(prioridades: PrioridadDto): Flow<Resource<PrioridadDto>> = flow {
-         try {
+    fun postPrioridades(prioridades: PrioridadDto): Flow<Resource<PrioridadDto>> = flow{
+        try {
+            emit(Resource.Loading())
+
             val response = prioridad.postPrioridades(prioridades)
 
-            if (response.isSuccessful) {
-                val responseBody = response.body()
-                if (responseBody != null) {
-                    Resource.Success(responseBody)
-                } else {
-                    Resource.Error("Error en la comunicación con la Api")
-                }
-            } else {
-                Resource.Error("Error HTTP: ${response.code()} - ${response.message()}")
-            }
         } catch (e: HttpException) {
-            Resource.Error("Error HTTP: ${e.code()} - ${e.message()}")
+            //error general HTTP
+            emit(Resource.Error(e.message ?: "Error HTTP GENERAL"))
         } catch (e: IOException) {
-            Resource.Error("Verifica tu conexión a internet")
-        } catch (e: Exception) {
-            Resource.Error("Error desconocido: ${e.message}")
+            //debe verificar tu conexion a internet
+            emit(Resource.Error(e.message ?: "Verificar tu conexion a internet"))
+        }
+        catch (e: Exception) {
+            //debe verificar tu conexion a internet
+            emit(Resource.Error(e.message ?: "Verificar tu conexion a internet"))
         }
     }
 }

@@ -1,16 +1,22 @@
 package com.ucne.apiprioridades.ui.R_Prioridades
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Snackbar
@@ -22,12 +28,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ucne.apiprioridades.R
 import com.ucne.apiprioridades.data.remote.dto.PrioridadDto
@@ -35,19 +44,10 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun RegistroScreen(
-    onRegistrarButton: (PrioridadDto) -> Unit
+    viewModel: RegistroViewModel = hiltViewModel()
 ) {
-    val viewModel: RegistroViewModel = viewModel()
-
-    var idPrioridad by rememberSaveable { mutableStateOf("") }
-    var nombre by rememberSaveable { mutableStateOf("") }
-    var descripcion by rememberSaveable { mutableStateOf("") }
-    var plazo by rememberSaveable { mutableStateOf("") }
-    var isnull by rememberSaveable { mutableStateOf("") }
-    var creador by rememberSaveable { mutableStateOf("") }
-    var fechaCreacion by rememberSaveable { mutableStateOf("") }
-    var modificadoPor by rememberSaveable { mutableStateOf("") }
-    var fechaModificacion by rememberSaveable { mutableStateOf("") }
+    val state by viewModel.state.collectAsStateWithLifecycle()
+    val prioridad = state.prioridades
 
     Column(
         modifier = Modifier
@@ -57,129 +57,52 @@ fun RegistroScreen(
     ) {
         Text(text = "Registro de Prioridad", style = MaterialTheme.typography.bodyMedium)
 
+        state.succesMessege?.let {
+            Text(text = it)
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = idPrioridad,
-            onValueChange = { idPrioridad = it },
-            label = { Text("Prioridad ID") },
+            value = prioridad.nombre,
+            onValueChange = { viewModel.onEvent(PrioridadesEvent.Nombre(it)) },
+            label = { Text(text = "Nombre") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next)
+                .padding(5.dp)
         )
 
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Nombre") },
+            value = prioridad.descripcion,
+            onValueChange = { viewModel.onEvent(PrioridadesEvent.Descripcion(it)) },
+            label = { Text(text = "Descriopción") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(5.dp)
         )
 
-        OutlinedTextField(
-            value = descripcion,
-            onValueChange = { descripcion = it },
-            label = { Text("Descripción") },
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = plazo.toString(),
-            onValueChange = { plazo = it},
-            label = { Text("Plazo") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next)
-        )
-
-        OutlinedTextField(
-            value = isnull.toString(),
-            onValueChange = { isnull = it},
-            label = { Text("EsNulo") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = creador.toString(),
-            onValueChange = { creador = it},
-            label = { Text("Creado Por") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next)
-        )
-
-        OutlinedTextField(
-            value = fechaCreacion,
-            onValueChange = { fechaCreacion = it },
-            label = { Text("Fecha de Creación") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        OutlinedTextField(
-            value = modificadoPor.toString(),
-            onValueChange = { modificadoPor = it},
-            label = { Text("Modificado Por") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number,
-            imeAction = ImeAction.Next)
-        )
-
-        OutlinedTextField(
-            value = fechaModificacion,
-            onValueChange = { fechaModificacion = it },
-            label = { Text("Fecha de Modificación") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp)
-        )
-
-        Button(
-            onClick = {
-                val prioridad = PrioridadDto(
-                    idPrioridad = idPrioridad.toInt(),
-                    nombre = nombre,
-                    descripcion = descripcion,
-                    plazo = plazo.toInt(),
-                    esNulo = isnull.toBoolean(),
-                    Creador = creador.toInt(),
-                    fechaCreacion = fechaCreacion,
-                    modidicador = modificadoPor.toInt(),
-                    fechaModificacion = fechaModificacion
-                )
-                viewModel.postPrioridades(prioridad)
-
-              /*  idPrioridad = ""
-                nombre = ""
-                descripcion = ""
-                plazo = ""
-                creador = ""
-                fechaCreacion = ""
-                modificadoPor = ""
-                fechaModificacion = ""*/
-            },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(
-                contentColor = Color.Gray,
-                containerColor = Color.Green
-            )
-
+                .padding(5.dp, 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = "Registrar", modifier = Modifier.padding(8.dp))
+            Button(
+                onClick = {
+                    viewModel.onEvent(PrioridadesEvent.onSave)
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(4.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Guardar")
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+            }
         }
     }
 }

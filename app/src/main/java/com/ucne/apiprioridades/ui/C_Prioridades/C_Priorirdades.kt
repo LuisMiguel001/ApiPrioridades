@@ -29,19 +29,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ucne.apiprioridades.data.remote.dto.PrioridadDto
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun ConsultaScreen() {
-    val viewModel: ConsultaViewModel = viewModel()
+fun ConsultaScreen(
+    viewModel: ConsultaViewModel = hiltViewModel()
+) {
 
     LaunchedEffect(key1 = true) {
         viewModel.getAllPrioridades()
     }
 
-    var idPrioridad by remember { mutableStateOf("") }
+    /*var idPrioridad by remember { mutableStateOf("") }*/
 
     val state by viewModel.state.collectAsState()
 
@@ -57,6 +59,7 @@ fun ConsultaScreen() {
         )
 
         Spacer(modifier = Modifier.height(16.dp))
+/*
 
         OutlinedTextField(
             value = idPrioridad,
@@ -70,8 +73,9 @@ fun ConsultaScreen() {
                 imeAction = ImeAction.Done
             )
         )
+*/
 
-        Button(
+/*        Button(
             onClick = {
                 if (idPrioridad.isNotEmpty()) {
                     viewModel.getPrioridad(idPrioridad.toInt())
@@ -84,7 +88,7 @@ fun ConsultaScreen() {
             )
         ) {
             Text(text = "Buscar", modifier = Modifier.padding(8.dp))
-        }
+        }*/
 
         Spacer(modifier = Modifier.height(16.dp))
 

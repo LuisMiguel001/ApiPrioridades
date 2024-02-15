@@ -17,28 +17,32 @@ import javax.inject.Inject
 class ConsultaViewModel @Inject constructor(
     private val prioridadRepository: PrioridadRepository
 ) : ViewModel() {
-
+//
     private val _state = MutableStateFlow(ConsultaScreenState())
     val state = _state.asStateFlow()
+
+    init {
+        getAllPrioridades()
+    }
 
     fun getAllPrioridades() {
         viewModelScope.launch {
             prioridadRepository.getPrioridades().collect { resource ->
                 when (resource) {
+                    is Resource.Loading -> {
+                        _state.value = ConsultaScreenState(isLoading = true)
+                    }
                     is Resource.Success -> {
                         _state.update { it.copy(prioridad = resource.data, isLoading = false) }
                     }
                     is Resource.Error -> {
                         _state.value = ConsultaScreenState(error = resource.message ?: "Error desconocido")
                     }
-                    is Resource.Loading -> {
-                        _state.value = ConsultaScreenState(isLoading = true)
-                    }
                 }
             }
         }
     }
-
+/*
     fun getPrioridad(id: Int) {
         viewModelScope.launch {
             prioridadRepository.getPrioridadById(id).collect { resource ->
@@ -57,7 +61,7 @@ class ConsultaViewModel @Inject constructor(
                 }
             }
         }
-    }
+    }*/
 }
 
 data class ConsultaScreenState(
@@ -75,5 +79,4 @@ data class ConsultaScreenState(
         "",
     ),
     val error: String? = null,
-    val selectedPrioridad: PrioridadDto? = null,
 )

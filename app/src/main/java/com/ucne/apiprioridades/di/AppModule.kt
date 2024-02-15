@@ -26,9 +26,8 @@ object  AppModule{
     @Singleton
     @Provides
     fun provideVerboApi(moshi: Moshi): PrioridadApi {
-        val Base_Url = "https://sag-api-dev.azurewebsites.net/"
         return Retrofit.Builder()
-            .baseUrl(Base_Url)
+            .baseUrl("https://sag-api-dev.azurewebsites.net/")
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
             .create(PrioridadApi::class.java)

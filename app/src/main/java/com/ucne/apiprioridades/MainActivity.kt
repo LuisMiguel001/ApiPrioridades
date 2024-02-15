@@ -35,9 +35,7 @@ class MainActivity : ComponentActivity() {
                             onConsulta = { currentScreen = "consulta" }
                         )
                     } else if (currentScreen == "registro") {
-                        RegistroScreen(
-                            onRegistrarButton = {}
-                        )
+                        RegistroScreen()
                     } else if (currentScreen == "consulta") {
                         ConsultaScreen()
                     }
