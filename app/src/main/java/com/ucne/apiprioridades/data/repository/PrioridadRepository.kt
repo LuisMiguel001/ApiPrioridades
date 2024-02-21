@@ -61,7 +61,8 @@ class PrioridadRepository @Inject constructor(
         try {
             emit(Resource.Loading())
 
-            val response = prioridad.postPrioridades(prioridades)
+           prioridad.postPrioridades(prioridades)
+            emit(Resource.Success(prioridades))
 
         } catch (e: HttpException) {
             //error general HTTP

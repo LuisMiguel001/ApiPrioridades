@@ -1,7 +1,5 @@
 package com.ucne.apiprioridades.data.remote.dto
 
-import java.time.LocalDate
-
 data class PrioridadDto(
     val idPrioridad : Int = 0,
     val nombre: String = "",

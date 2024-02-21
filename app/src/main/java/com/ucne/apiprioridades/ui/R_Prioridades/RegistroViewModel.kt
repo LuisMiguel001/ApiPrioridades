@@ -1,6 +1,5 @@
 package com.ucne.apiprioridades.ui.R_Prioridades
 
-import android.widget.Switch
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ucne.apiprioridades.data.remote.dto.PrioridadDto
@@ -34,7 +33,7 @@ class RegistroViewModel @Inject constructor(
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                succesMessege = "Se guardo correctamente"
+                                succesMessage = "Se guardo correctamente"
                             )
                         }
                     }
@@ -53,6 +52,14 @@ class RegistroViewModel @Inject constructor(
     }
     fun onEvent(event: PrioridadesEvent){
         when(event){
+            is PrioridadesEvent.IdPrioridad -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(idPrioridad = event.idPrioridad.toIntOrNull()?:0)
+                    )
+                }
+            }
+
             is PrioridadesEvent.Nombre -> {
                 _state.update {
                     it.copy(
@@ -69,31 +76,86 @@ class RegistroViewModel @Inject constructor(
                 }
             }
 
-            PrioridadesEvent.onSave -> {
-                postPrioridades()
+            is PrioridadesEvent.Plazo -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(plazo = event.plazo.toIntOrNull()?:0)
+                    )
+                }
             }
 
+            is PrioridadesEvent.IsNull -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(esNulo = event.esNulo.toBoolean())
+                    )
+                }
+            }
+
+            is PrioridadesEvent.CreadoPor -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(Creador = event.creadoPor.toIntOrNull()?:0)
+                    )
+                }
+            }
+
+            is PrioridadesEvent.FechaCreacion -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(fechaCreacion = event.fechaChange)
+                    )
+                }
+            }
+
+            is PrioridadesEvent.ModificadoPor -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(modidicador = event.modificadoPor.toIntOrNull()?:0)
+                    )
+                }
+            }
+
+            is PrioridadesEvent.FechaModificaion -> {
+                _state.update {
+                    it.copy(
+                        prioridades = it.prioridades.copy(fechaModificacion = event.fechaModificaion)
+                    )
+                }
+            }
+
+            PrioridadesEvent.onSave -> {
+                postPrioridades()
+                PrioridadesEvent.onNew
+            }
+
+            PrioridadesEvent.onNew -> {
+                _state.update {
+                    it.copy(
+                        prioridades = PrioridadDto()
+                    )
+                }
+            }
             else -> {}
         }
     }
 }
 
-
-
 data class RegistroState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val succesMessege: String? = null,
+    val succesMessage: String? = null,
     val prioridades: PrioridadDto = PrioridadDto(),
 )
 
 sealed class PrioridadesEvent {
+    data class IdPrioridad(val idPrioridad: String): PrioridadesEvent()
     data class Nombre(val nombre: String): PrioridadesEvent()
     data class Descripcion(val descripcion: String): PrioridadesEvent()
     data class Plazo(val plazo: String): PrioridadesEvent()
     data class IsNull(val esNulo: String): PrioridadesEvent()
     data class CreadoPor(val creadoPor: String): PrioridadesEvent()
-    data class FechaChange(val fechaChange: String): PrioridadesEvent()
+    data class FechaCreacion(val fechaChange: String): PrioridadesEvent()
     data class ModificadoPor(val modificadoPor: String): PrioridadesEvent()
     data class FechaModificaion(val fechaModificaion: String): PrioridadesEvent()
     object onSave: PrioridadesEvent()

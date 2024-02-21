@@ -9,6 +9,7 @@ import com.ucne.apiprioridades.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class ConsultaViewModel @Inject constructor(
     private val prioridadRepository: PrioridadRepository
 ) : ViewModel() {
-//
+
     private val _state = MutableStateFlow(ConsultaScreenState())
     val state = _state.asStateFlow()
 
@@ -25,43 +26,38 @@ class ConsultaViewModel @Inject constructor(
         getAllPrioridades()
     }
 
-    fun getAllPrioridades() {
+    private fun getAllPrioridades() {
         viewModelScope.launch {
-            prioridadRepository.getPrioridades().collect { resource ->
-                when (resource) {
+            prioridadRepository.getPrioridades().collectLatest { result ->
+                when (result) {
                     is Resource.Loading -> {
-                        _state.value = ConsultaScreenState(isLoading = true)
+                        _state.update {
+                            ConsultaScreenState(isLoading = true)
+                        }
                     }
+
                     is Resource.Success -> {
-                        _state.update { it.copy(prioridad = resource.data, isLoading = false) }
+                        _state.update {
+                            it.copy(
+                                prioridad = result.data,
+                                isLoading = false
+                            )
+                        }
                     }
+
                     is Resource.Error -> {
-                        _state.value = ConsultaScreenState(error = resource.message ?: "Error desconocido")
+                        _state.update {
+                            it.copy(
+                                error = result.message,
+                                prioridad = emptyList(),
+                                isLoading = false
+                            )
+                        }
                     }
                 }
             }
         }
     }
-/*
-    fun getPrioridad(id: Int) {
-        viewModelScope.launch {
-            prioridadRepository.getPrioridadById(id).collect { resource ->
-                when (resource) {
-                    is Resource.Success -> {
-                        _state.update { it.copy(selectedPrioridad = resource.data, isLoading = false) }
-                    }
-                    is Resource.Error -> {
-                        _state.value = ConsultaScreenState(error = resource.message ?: "Error desconocido")
-                        Log.e("ConsultaViewModel", "Error en la consulta: ${resource.message}")
-                    }
-                    is Resource.Loading -> {
-                        _state.value = ConsultaScreenState(isLoading = true)
-                        Log.d("ConsultaViewModel", "Cargando...")
-                    }
-                }
-            }
-        }
-    }*/
 }
 
 data class ConsultaScreenState(
